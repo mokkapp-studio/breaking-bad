@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# Paso 1: Styled components
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Instalación de Styled components: npm i @emotion/core @emotion/styled
 
-## Available Scripts
 
-In the project directory, you can run:
+## Paso 2: función API
 
-### `npm start`
+Se llama a la función callAPI 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Se utiliza Async / Await + Fetch
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Fetch: Fetch es el nombre de una nueva API para Javascript con la cuál podemos realizar peticiones HTTP asíncronas utilizando promesas y de forma que el código sea un poco más sencillo y menos verbose.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  const callAPI = async () => {
 
-### `npm run build`
+    const api = await fetch('http://breaking-bad-quotes.herokuapp.com/v1/quotes');
+    console.log(api)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    ----------- El console log devuelte la respuesta de la url: ----------------
+    Response {type: "cors", url: "http://breaking-bad-quotes.herokuapp.com/v1/quotes", redirected: false, status: 200, ok: true, …}
+    body: (...)
+    bodyUsed: false
+    headers: Headers {}
+    ok: true
+    redirected: false
+    status: 200
+    statusText: "OK"
+    type: "cors"
+    url: "http://breaking-bad-quotes.herokuapp.com/v1/quotes"
+    __proto__: Response
+    }
+    --------------------------------------------------------------------------
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Para extraer la data que devuelve la API se tiene que utilizar la función .json() de javaxcript.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  const callAPI = async () => {
+    const api = await fetch('http://breaking-bad-quotes.herokuapp.com/v1/quotes');
+    const frase = await api.json()
+    console.log(frase)
+  }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  ------------ crear una nueva función que equivale api. al pasarle la función api.json() --------
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    la promesa es:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    Promise {<pending>}
+    __proto__: Promise
+    [[PromiseState]]: "fulfilled"
+    [[PromiseResult]]: Array(1)
+    0:
+    author: "Gustavo Fring"
+    quote: "I hide in plain sight, same as you."
+    __proto__: Object
+    length: 1
 
-## Learn More
+  ---------------------------------------------------------------------------------------------------
+ 
+    si le pasamos al console.log console.log(frase[0])
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    entrará dentro del objeto donde está las frase y su autor y devolverá:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    author: "Gustavo Fring"
+    quote: "I hide in plain sight, same as you."
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+  ---------------------------------------------------------------------------
 
-### Analyzing the Bundle Size
+  Para estraer los datos y poderlos pintar en el componente es necesario crear un useState
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  - Creamos una función con un objeto vacío
 
-### Making a Progressive Web App
+  const [frase, setFrase ] = useState[{}]  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+  utilizamos el nombre farse en el state, que es donde se almacenan los datos de la llamada a la API.
 
-### Advanced Configuration
+  Así que el astate se lo pasamos por props al componente Frase.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+  en la función setFrase la psamos frase para que modifique el State.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+  --------------------------------------------------------------------------------
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    En el componente Frase le pasamos por props {frase}
+
+    En el html le pintamos:
+
+            <h2>{frase.author}</h2>
+            <p>{frase.quote}</p>
+        
+
+    --------------------------------------------------------------------------------  
+
+
+    useEffect es como el document.ready. se utiliza cuando carga el componente
+    cuando el componente esté listo se llama a la API.
+
+
+      useEffect( () =>{
+        callAPI()
+      }, [])
+
+      como dependencias se le pase un array vacío. y cuando este componente carge se va a consultar la API de forma automática. 
+
+
